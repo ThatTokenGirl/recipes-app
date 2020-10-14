@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { makeStyles } from "@material-ui/core";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import Routes from "./pages";
+
+const useStyles = makeStyles((theme) => ({
+  mainContent: {
+    padding: theme.spacing(4),
+    width: "100%",
+    height: "100%",
+  },
+}));
 
 function App() {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.mainContent}>
+      <BrowserRouter>
+        <Routes></Routes>
+      </BrowserRouter>
     </div>
   );
 }
