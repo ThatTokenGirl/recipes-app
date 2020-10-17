@@ -10,14 +10,12 @@ import { store } from "./store";
 import { theme } from "./theme";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline></CssBaseline>
-        <App />
-      </ThemeProvider>
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline></CssBaseline>
+      <App />
+    </ThemeProvider>
+  </Provider>,
   document.getElementById("root")
 );
 
