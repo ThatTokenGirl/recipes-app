@@ -1,1 +1,2 @@
-export { default as Sheet } from "./sheet.component";
+export { default as Sheet } from "./sheet";
+export { default as Header } from "./header";
