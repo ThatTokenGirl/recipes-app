@@ -25,12 +25,14 @@ import { UnitSelector } from "../../components";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    page: {
+    root: {
       display: "grid",
       gap: `${theme.spacing(2)}px`,
-      justifyContent: "center",
-      justifyItems: "center",
-      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gridTemplateAreas: `
+        "save         save"
+        "ingredients  instructions"
+      `,
+      gridTemplateColumns: "1fr 1fr",
     },
 
     container: {
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme) =>
     },
 
     ingredientsContainer: {
+      gridArea: "ingredients",
       display: "grid",
       gap: `${theme.spacing(2)}px`,
       gridTemplateColumns: "max-content minmax(100px, 35%) 1fr",
@@ -49,6 +52,15 @@ const useStyles = makeStyles((theme) =>
 
     ingredientLabel: {
       gridColumn: "1 / -1",
+    },
+
+    instructionsContainer: {
+      gridArea: "instructions",
+    },
+
+    saveButton: {
+      gridArea: "save",
+      justifySelf: "end",
     },
 
     counter: {
@@ -63,7 +75,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-type PropsFromStore = { recipe: Recipe };
+type PropsFromStore = { recipe: Recipe; isNew: boolean };
 type OwnProps = { id: string } | { new: true };
 
 type Props = PropsFromStore;
@@ -80,10 +92,10 @@ const propsMap: MapStateToProps<PropsFromStore, OwnProps, RootState> = (
   if (!recipe)
     throw new Error(`Unable to find recipe with id = ${(ownProps as any).id}`);
 
-  return { recipe };
+  return { recipe, isNew: "new" in ownProps };
 };
 
-const _RecipeDetailsPage = ({ recipe: recipeProp }: Props) => {
+const _RecipeDetailsPage = ({ recipe: recipeProp, isNew }: Props) => {
   const classes = useStyles();
   const [recipe, setRecipe] = useState(recipeProp);
 
@@ -102,8 +114,15 @@ const _RecipeDetailsPage = ({ recipe: recipeProp }: Props) => {
   useEffect(() => setRecipe(recipeProp), [recipeProp]);
 
   return (
-    <div className={classes.page}>
-      <Sheet className={classes.container}>
+    <div className={classes.root}>
+      <Button
+        className={classes.saveButton}
+        variant="contained"
+        color="primary"
+      >
+        {isNew ? "Create" : "Save"}
+      </Button>
+      <Sheet className={classes.ingredientsContainer}>
         <FormControl>
           <InputLabel>Name</InputLabel>
           <Input
@@ -112,7 +131,7 @@ const _RecipeDetailsPage = ({ recipe: recipeProp }: Props) => {
           ></Input>
         </FormControl>
 
-        <div className={classes.ingredientsContainer}>
+        {/* <div className={classes.ingredientsContainer}>
           <FormLabel component="div" className={classes.ingredientLabel}>
             Ingredients
           </FormLabel>
@@ -134,13 +153,17 @@ const _RecipeDetailsPage = ({ recipe: recipeProp }: Props) => {
           ))}
 
           <div className={classes.buttonContainer}>
-            <Button onClick={addIngredient} variant="contained" color="primary">
+            <Button
+              onClick={addIngredient}
+              variant="contained"
+              color="secondary"
+            >
               <Add /> Add Ingredient
             </Button>
           </div>
-        </div>
+        </div> */}
       </Sheet>
-      <Sheet className={classes.container}>
+      <Sheet className={classes.instructionsContainer}>
         <TextField label="Tags" />
       </Sheet>
     </div>

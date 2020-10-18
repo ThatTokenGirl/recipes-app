@@ -37,6 +37,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   [theme.breakpoints.down("sm")]: {
+    root: {
+      gridTemplateAreas: `
+        "header"
+        "main"
+      `,
+      gridTemplateColumns: "1fr",
+    },
     mainContent: {
       padding: theme.spacing(2),
     },

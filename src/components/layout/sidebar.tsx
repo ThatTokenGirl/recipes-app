@@ -1,21 +1,45 @@
 import {
   Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   makeStyles,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { matchPath, useHistory, useLocation } from "react-router";
-import { RecipeIcon, SearchIcon, ShoppingIcon } from "../icons";
+import { useResolution } from "../../hooks";
+import { useNav } from "../../store";
+import { CloseIcon, RecipeIcon, SearchIcon, ShoppingIcon } from "../icons";
 
 type SidebarProps = { className?: string };
 
 const useStyles = makeStyles((theme) => ({
   sidebarPaper: {
     position: "static",
+  },
+
+  sidebarHeader: {
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.contrastText,
+  },
+
+  sidebarTitle: {
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    position: "absolute",
+    left: "50%",
+    transform: "translate(-50%,0)",
+  },
+
+  sidebarClose: {
+    marginLeft: "auto",
   },
 
   listItemActive: {
@@ -91,11 +115,15 @@ const iconsList = ({
   });
 
 export default function Sidebar(props: SidebarProps) {
+  const { variant, isOpen, toggle } = useNav();
   const classes = useStyles();
   const { pathname } = useLocation();
   const history = useHistory();
   const pathMatcher = (toMatch: string) => !!matchPath(pathname, toMatch);
-  const go = (path: string) => history.push(path);
+  const go = (path: string) => {
+    history.push(path);
+    toggle();
+  };
 
   return (
     <Drawer
@@ -103,8 +131,20 @@ export default function Sidebar(props: SidebarProps) {
       classes={{
         paper: classes.sidebarPaper,
       }}
-      variant="permanent"
+      variant={variant}
+      open={isOpen}
     >
+      {variant === "temporary" && (
+        <Toolbar className={classes.sidebarHeader}>
+          <Typography variant="h6" className={classes.sidebarTitle}>
+            Menu
+          </Typography>
+
+          <IconButton className={classes.sidebarClose} onClick={toggle}>
+            <CloseIcon />
+          </IconButton>
+        </Toolbar>
+      )}
       <List>{iconsList({ classes, pathMatcher, go })}</List>
     </Drawer>
   );
